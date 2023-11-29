@@ -15,7 +15,6 @@ class dbLocal(private val context: Context) {
     private val PREF_NAME = "nombre_pref"
     private val PREF_KEY_JSON = "clave_json"
 
-    val piero ="no le gusto que pusiese su nombre como piegpt"
     fun cargarDatos(): String? {
         val file = File(context.filesDir, FILE_NAME)
 
