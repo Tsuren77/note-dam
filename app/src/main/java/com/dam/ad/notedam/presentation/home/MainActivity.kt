@@ -12,12 +12,15 @@ import com.dam.ad.notedam.presentation.data.Categoria
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.AndroidEntryPoint
+import android.content.Context
+
+
 
 import java.io.File
 
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity(private val context: Context) : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
