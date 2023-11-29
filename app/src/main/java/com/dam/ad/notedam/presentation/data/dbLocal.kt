@@ -44,6 +44,7 @@ class dbLocal(private val context: Context) {
     }
 
     fun guardarDatos(nuevoJson: JSONObject) {
+
         // Convertir el nuevo JSON a String
         val nuevoJsonString = nuevoJson.toString()
 
