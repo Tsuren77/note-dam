@@ -1,6 +1,5 @@
 package com.dam.ad.notedam.presentation.home
 
-import android.app.AlertDialog
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -14,7 +13,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.AndroidEntryPoint
 import android.content.Context
-import android.content.DialogInterface
+
 
 
 import java.io.File
@@ -33,8 +32,7 @@ class MainActivity(private val context: Context) : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initNavMenu()
-// Llamada a la función para mostrar el diálogo al inicio de la aplicación
-        showSaveFileDialog()
+
          }
 
     private fun initNavMenu() {
@@ -43,34 +41,40 @@ class MainActivity(private val context: Context) : AppCompatActivity() {
         binding.bottomNavView.setupWithNavController(navController)
     }
 
+    //NUEVO PARA DESARROLLAR
 
-    private fun showSaveFileDialog() {
-        val options = arrayOf("Local", "Remoto")
-
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("Guardar fichero:")
-            .setItems(options) { dialogInterface: DialogInterface, which: Int ->
-                when (which) {
-                    0 -> saveLocally()
-                    1 -> saveRemotely()
-                }
-                dialogInterface.dismiss()
-            }
-
-        val dialog = builder.create()
-        dialog.show()
+    private val sharedPreferences: SharedPreferences by lazy {
+        context.getSharedPreferences("MiAppPrefs", Context.MODE_PRIVATE)
     }
 
-    private fun saveLocally() {
-        // Aquí puedes implementar la lógica para guardar localmente
-        // por ejemplo, escribir en un archivo en el almacenamiento interno
-        val file = File(filesDir, "nombre_del_archivo.txt")
-        // Realiza la operación de escritura en el archivo local
+    fun guardarOpcionAlmacenamientoLocal(almacenamientoLocal: Boolean) {
+        sharedPreferences.edit().putBoolean("almacenamientoLocal", almacenamientoLocal).apply()
     }
 
-    private fun saveRemotely() {
-        // Aquí puedes implementar la lógica para guardar de forma remota
-        // por ejemplo, enviar los datos a un servidor
+    fun obtenerOpcionAlmacenamientoLocal(): Boolean {
+        return sharedPreferences.getBoolean("almacenamientoLocal", false)
+    }
+
+    fun guardarCategorias(categorias: List<Categoria>) {
+        val jsonString = Gson().toJson(categorias)
+        // Aquí deberías decidir si guardar en local o remoto según la preferencia del usuario
+        if (obtenerOpcionAlmacenamientoLocal()) {
+            File(context.filesDir, "categorias.json").writeText(jsonString)
+        } else {
+            // Lógica para guardar en remoto
+        }
+    }
+
+    fun cargarCategorias(): List<Categoria> {
+        // Aquí deberías decidir si cargar desde local o remoto según la preferencia del usuario
+        val jsonString = if (obtenerOpcionAlmacenamientoLocal()) {
+            File(context.filesDir, "categorias.json").readText()
+        } else {
+            // Lógica para cargar desde remoto
+            ""
+        }
+        val tipoLista = object : TypeToken<List<Categoria>>() {}.type
+        return Gson().fromJson(jsonString, tipoLista) ?: emptyList()
     }
 
 
